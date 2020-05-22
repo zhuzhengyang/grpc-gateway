@@ -35,7 +35,16 @@ func (r *Registry) loadServices(file *File) error {
 				optsList = append(optsList, opts)
 			}
 			if len(optsList) == 0 {
-				glog.Warningf("No HttpRule found for method: %s.%s", svc.GetName(), md.GetName())
+				// glog.Warningf("No HttpRule found for method: %s.%s", svc.GetName(), md.GetName())
+				defaultRule := &options.HttpRule{
+				Pattern: &options.HttpRule_Post{
+					Post: "/auto/msg." + md.GetName(),
+				},
+				Body: "*",
+				}
+				optsList = []*options.HttpRule{defaultRule}
+			} else {
+				// fmt.Println(optsList[0])
 			}
 			meth, err := r.newMethod(svc, md, optsList)
 			if err != nil {
